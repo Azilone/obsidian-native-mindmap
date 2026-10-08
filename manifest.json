@@ -1,0 +1,9 @@
+{
+  "id": "native-mindmap",
+  "name": "Native Mindmap",
+  "version": "0.1.0",
+  "minAppVersion": "1.5.0",
+  "description": "Animated, keyboard-first mindmaps that live in plain Markdown notes.",
+  "author": "Kevin",
+  "isDesktopOnly": false
+}

@@ -1,0 +1,507 @@
+/* ─── Native Mindmap ─────────────────────────────────────────────────────── */
+
+.mm-view {
+	--mm-dur: 280ms;
+	--mm-ease: cubic-bezier(0.22, 0.9, 0.24, 1);
+	--mm-max-width: 260px;
+	position: relative;
+	padding: 0 !important;
+	overflow: hidden;
+}
+
+.mm-viewport {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	outline: none;
+	touch-action: none;
+	user-select: none;
+	-webkit-user-select: none;
+	background-color: var(--background-primary);
+}
+
+.mm-viewport.has-grid {
+	background-image: radial-gradient(circle, var(--background-modifier-border) 1px, transparent 1.3px);
+}
+
+.mm-viewport.is-panning {
+	cursor: grabbing;
+}
+
+.mm-viewport.is-dragging {
+	cursor: grabbing;
+}
+
+.mm-world {
+	position: absolute;
+	left: 0;
+	top: 0;
+	transform-origin: 0 0;
+	will-change: transform;
+}
+
+.mm-nodes {
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+/* ─── Edges ─── */
+
+.mm-edges {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 1px;
+	height: 1px;
+	overflow: visible;
+	pointer-events: none;
+}
+
+.mm-edge {
+	fill: none;
+	stroke: var(--mm-branch);
+	stroke-width: 1.5px;
+	stroke-linecap: round;
+	transition:
+		d var(--mm-dur) var(--mm-ease),
+		opacity var(--mm-dur) ease,
+		stroke 0.2s ease;
+}
+
+.mm-edge[data-depth='1'] {
+	stroke-width: 3px;
+}
+
+.mm-edge[data-depth='2'] {
+	stroke-width: 2px;
+}
+
+.mm-edge.is-drag-source {
+	opacity: 0.25;
+}
+
+/* ─── Topics ─── */
+
+.mm-node {
+	position: absolute;
+	left: 0;
+	top: 0;
+	box-sizing: border-box;
+	width: max-content;
+	max-width: var(--mm-max-width);
+	transform-origin: 50% 50%;
+	font-family: var(--font-text);
+	font-size: var(--font-text-size, 16px);
+	line-height: 1.4;
+	color: var(--text-normal);
+	overflow-wrap: anywhere;
+	cursor: default;
+	transition:
+		transform var(--mm-dur) var(--mm-ease),
+		opacity calc(var(--mm-dur) * 0.8) ease,
+		background-color 0.15s ease,
+		border-color 0.15s ease,
+		box-shadow 0.15s ease;
+}
+
+.mm-no-anim .mm-node,
+.mm-no-anim .mm-edge,
+.mm-node.mm-entering,
+.mm-edge.mm-entering {
+	transition: none !important;
+}
+
+.mm-node.mm-exiting {
+	pointer-events: none;
+}
+
+/* Central topic */
+.mm-node.mm-d0 {
+	padding: 10px 20px;
+	border-radius: 14px;
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+	font-size: 1.3em;
+	font-weight: 650;
+	box-shadow:
+		0 1px 2px rgba(0, 0, 0, 0.08),
+		0 6px 20px -6px color-mix(in srgb, var(--interactive-accent) 60%, transparent);
+}
+
+/* Main branches */
+.mm-node.mm-d1 {
+	padding: 6px 13px;
+	border-radius: 10px;
+	background: color-mix(in srgb, var(--mm-branch) 13%, var(--background-primary));
+	border: 1.5px solid color-mix(in srgb, var(--mm-branch) 55%, transparent);
+	font-size: 1.04em;
+	font-weight: 550;
+}
+
+/* Sub topics: text on a colored underline */
+.mm-node.mm-dn {
+	padding: 2px 4px 3px;
+	border-bottom: 2px solid var(--mm-branch);
+	border-radius: 5px 5px 0 0;
+	font-size: 0.94em;
+}
+
+.mm-node.mm-dn:hover {
+	background: var(--background-modifier-hover);
+}
+
+/* Selection ring */
+.mm-node::after {
+	content: '';
+	position: absolute;
+	inset: -5px;
+	border-radius: 9px;
+	border: 2px solid var(--interactive-accent);
+	opacity: 0;
+	transform: scale(0.97);
+	transition:
+		opacity 0.14s ease,
+		transform 0.18s var(--mm-ease);
+	pointer-events: none;
+}
+
+.mm-node.mm-d0::after {
+	border-radius: 19px;
+}
+
+.mm-node.mm-d1::after {
+	border-radius: 14px;
+}
+
+.mm-node.is-selected::after,
+.mm-node.is-editing::after {
+	opacity: 1;
+	transform: none;
+}
+
+.mm-node:not(.is-selected):not(.mm-d0):hover::after {
+	opacity: 0.3;
+	transform: none;
+}
+
+.mm-node.mm-d0.is-selected::after {
+	inset: -6px;
+	border-color: color-mix(in srgb, var(--interactive-accent) 55%, var(--text-normal));
+}
+
+.mm-node.is-editing {
+	cursor: text;
+	z-index: 3;
+}
+
+.mm-node.mm-dn.is-editing {
+	background: var(--background-primary);
+}
+
+.mm-node.is-drag-source {
+	opacity: 0.3 !important;
+}
+
+/* ─── Content ─── */
+
+.mm-content {
+	min-width: 1ch;
+	min-height: 1.4em;
+	outline: none;
+}
+
+.mm-content > *,
+.mm-content p {
+	margin: 0;
+}
+
+.mm-content.is-empty::before {
+	content: 'Topic';
+	color: var(--text-faint);
+}
+
+.mm-d0 .mm-content.is-empty::before {
+	color: color-mix(in srgb, var(--text-on-accent) 60%, transparent);
+}
+
+.is-editing .mm-content {
+	white-space: pre-wrap;
+	user-select: text;
+	-webkit-user-select: text;
+	caret-color: currentColor;
+}
+
+.is-editing .mm-content:empty::before {
+	content: '\200b';
+}
+
+.mm-content a {
+	cursor: pointer;
+}
+
+.mm-d0 .mm-content a,
+.mm-d0 .mm-content code {
+	color: inherit;
+}
+
+.mm-content code {
+	font-size: 0.88em;
+}
+
+.mm-content img {
+	max-width: 100%;
+	border-radius: var(--radius-s);
+}
+
+/* ─── Fold toggle ─── */
+
+.mm-toggle {
+	position: absolute;
+	top: 50%;
+	left: calc(100% + 9px);
+	box-sizing: border-box;
+	min-width: 18px;
+	height: 18px;
+	margin: -9px 0 0 -9px;
+	padding: 0 4px;
+	border-radius: 9px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: var(--font-interface);
+	font-size: 10px;
+	font-weight: 650;
+	font-variant-numeric: tabular-nums;
+	line-height: 1;
+	color: var(--text-muted);
+	background: var(--background-primary);
+	border: 1.5px solid var(--mm-branch);
+	opacity: 0;
+	transform: scale(0.5);
+	transition:
+		opacity 0.15s ease,
+		transform 0.2s var(--mm-ease),
+		background-color 0.15s ease;
+	cursor: pointer;
+	z-index: 2;
+}
+
+.side-left > .mm-toggle {
+	left: auto;
+	right: calc(100% + 9px);
+	margin: -9px -9px 0 0;
+}
+
+.mm-dn > .mm-toggle {
+	top: calc(100% - 1px);
+}
+
+.mm-toggle:empty::before {
+	content: '';
+	width: 7px;
+	height: 1.5px;
+	border-radius: 1px;
+	background: currentColor;
+}
+
+.mm-toggle.is-hidden {
+	display: none;
+}
+
+.mm-node:hover > .mm-toggle,
+.mm-node.is-selected > .mm-toggle,
+.mm-node.is-collapsed > .mm-toggle {
+	opacity: 1;
+	transform: none;
+}
+
+.mm-node > .mm-toggle:hover {
+	transform: scale(1.15);
+}
+
+.mm-node.is-collapsed > .mm-toggle {
+	background: var(--mm-branch);
+	color: var(--background-primary);
+}
+
+/* ─── Drag & drop ─── */
+
+.mm-node.mm-ghost {
+	transition: none !important;
+	opacity: 0.92;
+	z-index: 20;
+	pointer-events: none;
+	box-shadow: var(--shadow-l);
+}
+
+.mm-node.mm-ghost.mm-dn {
+	background: var(--background-primary);
+}
+
+.mm-node.mm-ghost::after,
+.mm-node.mm-ghost > .mm-toggle {
+	display: none;
+}
+
+.mm-node.mm-drop-inside::after {
+	opacity: 1;
+	transform: none;
+	border-style: dashed;
+	background: color-mix(in srgb, var(--interactive-accent) 12%, transparent);
+}
+
+.mm-node.mm-drop-before::before,
+.mm-node.mm-drop-after::before {
+	content: '';
+	position: absolute;
+	left: -2px;
+	right: -2px;
+	height: 3px;
+	border-radius: 2px;
+	background: var(--interactive-accent);
+	animation: mm-fade-in 0.12s ease;
+}
+
+.mm-node.mm-drop-before::before {
+	top: -7px;
+}
+
+.mm-node.mm-drop-after::before {
+	bottom: -7px;
+}
+
+@keyframes mm-fade-in {
+	from {
+		opacity: 0;
+		transform: scaleX(0.6);
+	}
+}
+
+/* ─── Floating controls (mirrors Canvas) ─── */
+
+.mm-controls {
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	z-index: 5;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 2px;
+	padding: 4px;
+	background: var(--background-primary);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	box-shadow: var(--shadow-s);
+}
+
+.mm-control {
+	width: 28px;
+	height: 28px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.mm-zoom-label {
+	padding: 2px 0;
+	font-size: var(--font-ui-smaller);
+	font-variant-numeric: tabular-nums;
+	color: var(--text-muted);
+	cursor: pointer;
+	border-radius: var(--radius-s);
+}
+
+.mm-zoom-label:hover {
+	color: var(--text-normal);
+}
+
+.mm-control-sep {
+	width: 60%;
+	height: 1px;
+	margin: 2px 0;
+	background: var(--background-modifier-border);
+}
+
+.is-mobile .mm-control {
+	width: 36px;
+	height: 36px;
+}
+
+/* ─── Shortcuts modal ─── */
+
+.mm-shortcuts {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	gap: 20px 28px;
+}
+
+.mm-shortcuts-title {
+	margin-bottom: 6px;
+	font-size: var(--font-ui-small);
+	font-weight: var(--font-semibold);
+	color: var(--text-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+.mm-shortcuts-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 4px 0;
+	font-size: var(--font-ui-small);
+}
+
+.mm-shortcuts-keys {
+	display: flex;
+	gap: 4px;
+	flex-shrink: 0;
+}
+
+.mm-shortcuts-keys kbd {
+	min-width: 1.6em;
+	text-align: center;
+}
+
+/* ─── Canvas mindmap mode ─── */
+
+.canvas-node.mm-canvas-enter .canvas-node-container {
+	animation: mm-canvas-pop 0.32s cubic-bezier(0.22, 0.9, 0.24, 1);
+}
+
+@keyframes mm-canvas-pop {
+	from {
+		opacity: 0;
+		transform: scale(0.6);
+	}
+}
+
+.canvas-node.mm-drop-target .canvas-node-container {
+	outline: 2px dashed var(--interactive-accent);
+	outline-offset: 5px;
+	transition: outline-offset 0.15s ease;
+}
+
+/* ─── Marquee selection & panning ─── */
+
+.mm-marquee {
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 4;
+	pointer-events: none;
+	border: 1px solid var(--interactive-accent);
+	border-radius: 2px;
+	background: color-mix(in srgb, var(--interactive-accent) 12%, transparent);
+}
+
+.mm-viewport.is-space {
+	cursor: grab;
+}
+
+.mm-viewport.is-space.is-panning {
+	cursor: grabbing;
+}
