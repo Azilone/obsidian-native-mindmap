@@ -505,3 +505,8 @@
 .mm-viewport.is-space.is-panning {
 	cursor: grabbing;
 }
+
+/* "MINDMAP" tag in the file explorer, next to the native "CANVAS" one */
+.nav-file-tag.mm-file-tag {
+	text-transform: uppercase;
+}

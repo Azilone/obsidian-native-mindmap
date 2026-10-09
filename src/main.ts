@@ -51,8 +51,17 @@ export default class MindmapPlugin extends Plugin {
 			),
 		);
 		this.register(() => this.canvasMaps.detachAll());
-		this.registerEvent(this.app.metadataCache.on('changed', () => this.syncHeaderActions()));
+		this.registerEvent(
+			this.app.metadataCache.on('changed', (file) => {
+				this.syncHeaderActions();
+				this.syncExplorerBadges(file);
+			}),
+		);
+		this.registerEvent(this.app.vault.on('rename', (file) => window.setTimeout(() => this.syncExplorerBadges(file), 50)));
+		this.register(() => document.querySelectorAll('.mm-file-tag').forEach((el) => el.remove()));
 		this.app.workspace.onLayoutReady(() => {
+			this.patchExplorer();
+			this.syncExplorerBadges();
 			for (const leaf of this.app.workspace.getLeavesOfType('markdown')) {
 				const file = (leaf.view as MarkdownView).file;
 				if (file && this.isMindmapFile(file)) void this.setMindmapView(leaf);
@@ -119,6 +128,56 @@ export default class MindmapPlugin extends Plugin {
 	async setMindmapView(leaf: WorkspaceLeaf) {
 		this.markdownLeaves.delete(leaf);
 		await leaf.setViewState({ type: VIEW_TYPE_MINDMAP, state: leaf.view.getState(), popstate: true } as ViewState);
+	}
+
+	// ─── File explorer badge ───────────────────────────────────────────────────
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	private explorerItems(): Record<string, any>[] {
+		return this.app.workspace
+			.getLeavesOfType('file-explorer')
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			.map((leaf) => ((leaf.view as any).fileItems ?? {}) as Record<string, any>);
+	}
+
+	/** A "MINDMAP" tag next to mindmap notes, styled like Canvas's "CANVAS" tag. */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	private syncBadge(item: any) {
+		const selfEl: HTMLElement | undefined = item?.selfEl;
+		if (!selfEl || !(item.file instanceof TFile)) return;
+		const show = this.isMindmapFile(item.file);
+		const tag = selfEl.querySelector(':scope > .mm-file-tag');
+		if (show && !tag) selfEl.createDiv({ cls: ['nav-file-tag', 'mm-file-tag'], text: 'mindmap' });
+		else if (!show && tag) tag.remove();
+	}
+
+	private syncExplorerBadges(file?: TFile | { path: string }) {
+		for (const items of this.explorerItems()) {
+			if (file) this.syncBadge(items[file.path]);
+			else Object.values(items).forEach((item) => this.syncBadge(item));
+		}
+	}
+
+	/** Re-apply the badge whenever the explorer redraws a file's title. */
+	private patchExplorer() {
+		const item = this.explorerItems()
+			.flatMap((items) => Object.values(items))
+			.find((i) => i?.file instanceof TFile);
+		if (!item) return;
+		const proto = Object.getPrototypeOf(item);
+		if (typeof proto?.updateTitle !== 'function') return;
+		// eslint-disable-next-line @typescript-eslint/no-this-alias
+		const plugin = this;
+		this.register(
+			around(proto, {
+				updateTitle: (next: (...args: unknown[]) => unknown) =>
+					function (this: unknown, ...args: unknown[]) {
+						const result = next.apply(this, args);
+						plugin.syncBadge(this);
+						return result;
+					},
+			}),
+		);
 	}
 
 	/** Add a "Open as mindmap" button to the header of Markdown views showing a mindmap note. */
