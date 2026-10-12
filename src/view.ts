@@ -596,7 +596,7 @@ export class MindmapView extends TextFileView {
 				const o = originOf(id);
 				if (o) {
 					nv.el.style.transform = this.nodeTransform(o.x + o.w / 2 - p.w / 2, o.y, p.h, 0.4);
-					nv.el.setCssStyles({ opacity: '0' });
+					nv.el.addClass('mm-from');
 				}
 			}
 			if (v.depth === 0) continue;
@@ -608,7 +608,7 @@ export class MindmapView extends TextFileView {
 				const o = anim ? originOf(p.edgeFrom ?? this.parents.get(id)!.id) : undefined;
 				if (o) {
 					this.setPath(path, this.dotPath(this.anchor(o, p.fromSide ?? 'right', true)));
-					path.setCssStyles({ opacity: '0' });
+					path.classList.add('mm-from');
 				}
 			}
 			path.dataset.depth = String(Math.min(v.depth, 3));
@@ -617,19 +617,17 @@ export class MindmapView extends TextFileView {
 
 		// 2. Commit start state, then move everything to its target.
 		void this.worldEl.offsetWidth;
-		for (const id of created) this.views.get(id)?.el.removeClass('mm-entering');
-		for (const path of enteringEdges) path.classList.remove('mm-entering');
+		for (const id of created) this.views.get(id)?.el.removeClass('mm-entering', 'mm-from');
+		for (const path of enteringEdges) path.classList.remove('mm-entering', 'mm-from');
 
 		for (const v of visible) {
 			const id = v.node.id;
 			const p = layout.get(id)!;
 			const nv = this.views.get(id)!;
 			nv.el.style.transform = this.nodeTransform(p.x, p.y, p.h, 1);
-			nv.el.setCssStyles({ opacity: '' });
 			if (v.depth === 0) continue;
 			const path = this.edges.get(id)!;
 			this.setPath(path, this.edgePath(layout.get(p.edgeFrom ?? this.parents.get(id)!.id)!, p));
-			path.setCssStyles({ opacity: '' });
 		}
 
 		// 3. Animate removed elements back into their closest visible ancestor.
@@ -658,7 +656,6 @@ export class MindmapView extends TextFileView {
 			}
 			nv.el.addClass('mm-exiting');
 			nv.el.style.transform = this.nodeTransform(target.x + target.w / 2 - prev.w / 2, target.y, prev.h, 0.4);
-			nv.el.setCssStyles({ opacity: '0' });
 			window.setTimeout(dispose, dur);
 		}
 		for (const [id, path] of Array.from(this.edges)) {
@@ -671,7 +668,7 @@ export class MindmapView extends TextFileView {
 				continue;
 			}
 			this.setPath(path, this.dotPath(this.anchor(target, prev.fromSide ?? 'right', true)));
-			path.setCssStyles({ opacity: '0' });
+			path.classList.add('mm-exiting');
 			window.setTimeout(() => path.remove(), dur);
 		}
 
@@ -1617,7 +1614,6 @@ export class MindmapView extends TextFileView {
 		const ghost = nv.el.cloneNode(true) as HTMLElement;
 		ghost.removeClass('is-selected', 'mm-entering', 'is-drag-source');
 		ghost.addClass('mm-ghost');
-		ghost.setCssStyles({ opacity: '' });
 		this.nodesEl.appendChild(ghost);
 		d.ghost = ghost;
 		const w = this.toWorld(d.start);

@@ -112,6 +112,13 @@
 	transition: none !important;
 }
 
+.mm-node.mm-from,
+.mm-edge.mm-from,
+.mm-node.mm-exiting,
+.mm-edge.mm-exiting {
+	opacity: 0;
+}
+
 .mm-node.mm-exiting {
 	pointer-events: none;
 }
