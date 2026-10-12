@@ -10,10 +10,9 @@
 ![Obsidian](https://img.shields.io/badge/Obsidian-%E2%89%A5%201.5.0-7c3aed)
 ![Mobile](https://img.shields.io/badge/mobile-supported-success)
 
-<img src="assets/banner.png" alt="A Markdown note on the left, the same note rendered as a mindmap on the right">
+<img src="assets/demo.gif" alt="Building a mindmap with the keyboard, then in Canvas">
 
-<!-- Replace with the real demo once recorded: assets/demo.gif (or an mp4 dragged into a GitHub issue to get a hosted URL) -->
-<!-- <img src="assets/demo.gif" alt="Building a mindmap with Tab and Enter"> -->
+<sub>▶️ <a href="assets/demo.mp4">Watch the full 2-minute demo</a> (keyboard building, Markdown sync, Canvas mode)</sub>
 
 [Install](#installation) · [Features](#features) · [Shortcuts](#shortcuts) · [Canvas mode](#canvas-mode)
 
@@ -41,6 +40,10 @@ Most mindmap tools make you choose: a beautiful editor that locks your ideas in 
 | Layouts | Mindmap, Logic, Timeline, switchable per map with animation. |
 | Canvas | Turn any Canvas card into a mindmap with `Tab`. |
 | Platforms | Desktop, tablet, phone. |
+
+## Your map is a note
+
+<img src="assets/banner.png" alt="A Markdown note on the left, the same note rendered as a mindmap on the right">
 
 ## Quick start
 
@@ -150,5 +153,8 @@ Then enable **Native Mindmap** in *Settings → Community plugins*. The [Hot Rel
 Issues and pull requests are welcome. If a feature would make your mindmaps better, open an issue and describe the workflow.
 
 ## License
+
+Not affiliated with Obsidian.
+
 
 [MIT](LICENSE)
