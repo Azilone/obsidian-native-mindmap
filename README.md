@@ -9,6 +9,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Obsidian](https://img.shields.io/badge/Obsidian-%E2%89%A5%201.5.0-7c3aed)
 ![Mobile](https://img.shields.io/badge/mobile-supported-success)
+[![Obsidian community plugin](https://img.shields.io/badge/Obsidian-community%20plugin-7c3aed)](https://community.obsidian.md/plugins/native-mindmap)
 ![Maintained](https://img.shields.io/badge/maintained-yes-brightgreen)
 
 <img src="assets/demo.gif" alt="Building a mindmap with the keyboard, then in Canvas">
@@ -125,7 +126,7 @@ Several mindmaps can live on the same canvas next to your other cards. Only edge
 
 ### From Community plugins
 
-Native Mindmap has been submitted to the Obsidian community plugin directory and is awaiting review. Until it is listed, use BRAT or a manual install below.
+Open **Settings → Community plugins → Browse**, search for **Native Mindmap**, then select **Install** and **Enable**. You can also find it on the [community directory](https://community.obsidian.md/plugins/native-mindmap).
 
 ### From a GitHub release (manual)
 
