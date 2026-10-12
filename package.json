@@ -1,6 +1,6 @@
 {
   "name": "obsidian-native-mindmap",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A fast, animated, keyboard-first mindmap view for Obsidian, stored as plain Markdown.",
   "main": "main.js",
   "scripts": {
@@ -10,7 +10,6 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.11.0",
-    "builtin-modules": "^3.3.0",
     "esbuild": "^0.21.5",
     "obsidian": "latest",
     "tslib": "^2.6.2",

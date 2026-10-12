@@ -256,3 +256,13 @@ export class Notice {}
 export function normalizePath(p: string) {
 	return p;
 }
+
+P.setCssStyles = function (styles: Record<string, string>) {
+	Object.assign(this.style, styles);
+};
+P.setCssProps = function (props: Record<string, string>) {
+	for (const k in props) this.style.setProperty(k, props[k]);
+};
+(Node.prototype as any).instanceOf = function (type: any) {
+	return this instanceof type;
+};

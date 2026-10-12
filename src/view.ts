@@ -112,6 +112,10 @@ interface Camera {
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 const r1 = (n: number) => Math.round(n * 10) / 10;
 
+interface InternalPlugins {
+	getPluginById?(id: string): { instance?: { openGlobalSearch?(query: string): void } } | null;
+}
+
 export class MindmapView extends TextFileView {
 	plugin: MindmapPlugin;
 	hoverPopover: HoverPopover | null = null;
@@ -391,7 +395,7 @@ export class MindmapView extends TextFileView {
 
 	private scheduleRelayout() {
 		if (this.relayoutFrame) return;
-		this.relayoutFrame = requestAnimationFrame(() => {
+		this.relayoutFrame = window.requestAnimationFrame(() => {
 			this.relayoutFrame = 0;
 			void this.render(true).then(() => this.selectedId && this.ensureVisible(this.selectedId));
 		});
@@ -592,7 +596,7 @@ export class MindmapView extends TextFileView {
 				const o = originOf(id);
 				if (o) {
 					nv.el.style.transform = this.nodeTransform(o.x + o.w / 2 - p.w / 2, o.y, p.h, 0.4);
-					nv.el.style.opacity = '0';
+					nv.el.setCssStyles({ opacity: '0' });
 				}
 			}
 			if (v.depth === 0) continue;
@@ -604,7 +608,7 @@ export class MindmapView extends TextFileView {
 				const o = anim ? originOf(p.edgeFrom ?? this.parents.get(id)!.id) : undefined;
 				if (o) {
 					this.setPath(path, this.dotPath(this.anchor(o, p.fromSide ?? 'right', true)));
-					path.style.opacity = '0';
+					path.setCssStyles({ opacity: '0' });
 				}
 			}
 			path.dataset.depth = String(Math.min(v.depth, 3));
@@ -621,11 +625,11 @@ export class MindmapView extends TextFileView {
 			const p = layout.get(id)!;
 			const nv = this.views.get(id)!;
 			nv.el.style.transform = this.nodeTransform(p.x, p.y, p.h, 1);
-			nv.el.style.opacity = '';
+			nv.el.setCssStyles({ opacity: '' });
 			if (v.depth === 0) continue;
 			const path = this.edges.get(id)!;
 			this.setPath(path, this.edgePath(layout.get(p.edgeFrom ?? this.parents.get(id)!.id)!, p));
-			path.style.opacity = '';
+			path.setCssStyles({ opacity: '' });
 		}
 
 		// 3. Animate removed elements back into their closest visible ancestor.
@@ -654,7 +658,7 @@ export class MindmapView extends TextFileView {
 			}
 			nv.el.addClass('mm-exiting');
 			nv.el.style.transform = this.nodeTransform(target.x + target.w / 2 - prev.w / 2, target.y, prev.h, 0.4);
-			nv.el.style.opacity = '0';
+			nv.el.setCssStyles({ opacity: '0' });
 			window.setTimeout(dispose, dur);
 		}
 		for (const [id, path] of Array.from(this.edges)) {
@@ -667,7 +671,7 @@ export class MindmapView extends TextFileView {
 				continue;
 			}
 			this.setPath(path, this.dotPath(this.anchor(target, prev.fromSide ?? 'right', true)));
-			path.style.opacity = '0';
+			path.setCssStyles({ opacity: '0' });
 			window.setTimeout(() => path.remove(), dur);
 		}
 
@@ -763,9 +767,9 @@ export class MindmapView extends TextFileView {
 				k: from.k + (target.k - from.k) * e,
 			};
 			this.applyCam();
-			if (t < 1) this.camFrame = requestAnimationFrame(step);
+			if (t < 1) this.camFrame = window.requestAnimationFrame(step);
 		};
-		this.camFrame = requestAnimationFrame(step);
+		this.camFrame = window.requestAnimationFrame(step);
 	}
 
 	private toViewport(e: { clientX: number; clientY: number }): Point {
@@ -1613,7 +1617,7 @@ export class MindmapView extends TextFileView {
 		const ghost = nv.el.cloneNode(true) as HTMLElement;
 		ghost.removeClass('is-selected', 'mm-entering', 'is-drag-source');
 		ghost.addClass('mm-ghost');
-		ghost.style.opacity = '';
+		ghost.setCssStyles({ opacity: '' });
 		this.nodesEl.appendChild(ghost);
 		d.ghost = ghost;
 		const w = this.toWorld(d.start);
@@ -1702,9 +1706,8 @@ export class MindmapView extends TextFileView {
 		if (a.hasClass('internal-link')) {
 			void this.app.workspace.openLinkText(href, this.file?.path ?? '', Keymap.isModEvent(e));
 		} else if (a.hasClass('tag')) {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const search = (this.app as any).internalPlugins?.getPluginById?.('global-search');
-			search?.instance?.openGlobalSearch?.(`tag:${href}`);
+			const internal = (this.app as unknown as { internalPlugins?: InternalPlugins }).internalPlugins;
+			internal?.getPluginById?.('global-search')?.instance?.openGlobalSearch?.(`tag:${href}`);
 		} else if (href) {
 			window.open(href);
 		}

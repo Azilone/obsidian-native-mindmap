@@ -1,8 +1,10 @@
 import {
 	MarkdownView,
+	EventRef,
 	Menu,
 	Notice,
 	Plugin,
+	TAbstractFile,
 	TFile,
 	TFolder,
 	ViewState,
@@ -12,9 +14,18 @@ import {
 import { around } from 'monkey-around';
 import { FRONTMATTER_KEY } from './model';
 import { LAYOUTS, normalizeLayout } from './layout';
-import { CanvasMindmaps } from './canvas';
+import { CanvasMindmaps, type Canvas, type CanvasNode } from './canvas';
 import { DEFAULT_SETTINGS, MindmapSettingTab, type MindmapSettings } from './settings';
 import { MindmapView, VIEW_TYPE_MINDMAP } from './view';
+
+interface ExplorerItem {
+	selfEl?: HTMLElement;
+	file?: TAbstractFile;
+}
+
+interface CanvasMenuEvents {
+	on(name: 'canvas:node-menu', callback: (menu: Menu, node: CanvasNode) => void): EventRef;
+}
 
 const TEMPLATE = `---\n${FRONTMATTER_KEY}: basic\n---\n\n# Central idea\n`;
 
@@ -45,8 +56,7 @@ export default class MindmapPlugin extends Plugin {
 		);
 		this.registerEvent(this.app.workspace.on('active-leaf-change', () => this.canvasMaps.attachAll()));
 		this.registerEvent(
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			(this.app.workspace as any).on('canvas:node-menu', (menu: Menu, node: any) =>
+			(this.app.workspace as unknown as CanvasMenuEvents).on('canvas:node-menu', (menu: Menu, node: CanvasNode) =>
 				this.canvasMaps.addNodeMenuItems(menu, node),
 			),
 		);
@@ -99,7 +109,7 @@ export default class MindmapPlugin extends Plugin {
 
 	/** Open mindmap notes in the mindmap view, wherever Obsidian opens them from. */
 	private patchLeaves() {
-		// eslint-disable-next-line @typescript-eslint/no-this-alias
+		// eslint-disable-next-line @typescript-eslint/no-this-alias -- monkey-around wrappers rebind `this` to the patched object
 		const plugin = this;
 		this.register(
 			around(WorkspaceLeaf.prototype, {
@@ -132,18 +142,15 @@ export default class MindmapPlugin extends Plugin {
 
 	// ─── File explorer badge ───────────────────────────────────────────────────
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	private explorerItems(): Record<string, any>[] {
+	private explorerItems(): Record<string, ExplorerItem | undefined>[] {
 		return this.app.workspace
 			.getLeavesOfType('file-explorer')
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			.map((leaf) => ((leaf.view as any).fileItems ?? {}) as Record<string, any>);
+			.map((leaf) => (leaf.view as unknown as { fileItems?: Record<string, ExplorerItem | undefined> }).fileItems ?? {});
 	}
 
 	/** A "MINDMAP" tag next to mindmap notes, styled like Canvas's "CANVAS" tag. */
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	private syncBadge(item: any) {
-		const selfEl: HTMLElement | undefined = item?.selfEl;
+	private syncBadge(item: ExplorerItem | undefined) {
+		const selfEl = item?.selfEl;
 		if (!selfEl || !(item.file instanceof TFile)) return;
 		const show = this.isMindmapFile(item.file);
 		const tag = selfEl.querySelector(':scope > .mm-file-tag');
@@ -166,14 +173,14 @@ export default class MindmapPlugin extends Plugin {
 		if (!item) return;
 		const proto = Object.getPrototypeOf(item);
 		if (typeof proto?.updateTitle !== 'function') return;
-		// eslint-disable-next-line @typescript-eslint/no-this-alias
+		// eslint-disable-next-line @typescript-eslint/no-this-alias -- monkey-around wrappers rebind `this` to the patched object
 		const plugin = this;
 		this.register(
 			around(proto, {
 				updateTitle: (next: (...args: unknown[]) => unknown) =>
 					function (this: unknown, ...args: unknown[]) {
 						const result = next.apply(this, args);
-						plugin.syncBadge(this);
+						plugin.syncBadge(this as ExplorerItem);
 						return result;
 					},
 			}),
@@ -283,7 +290,7 @@ export default class MindmapPlugin extends Plugin {
 				},
 			});
 
-		const canvasCommand = (id: string, name: string, fn: (canvas: any, node: any) => unknown) =>
+		const canvasCommand = (id: string, name: string, fn: (canvas: Canvas, node: CanvasNode) => unknown) =>
 			this.addCommand({
 				id,
 				name,

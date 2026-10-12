@@ -15,7 +15,7 @@ import { around } from 'monkey-around';
 import type MindmapPlugin from './main';
 import { LAYOUTS, layoutTree, normalizeLayout, type LayoutMode, type Placed, type Side } from './layout';
 
-interface CanvasNode {
+export interface CanvasNode {
 	id: string;
 	x: number;
 	y: number;
@@ -50,7 +50,7 @@ interface CanvasEdge {
 	setData(data: Record<string, unknown>): void;
 }
 
-interface Canvas {
+export interface Canvas {
 	nodes: Map<string, CanvasNode>;
 	edges: Map<string, CanvasEdge>;
 	selection: Set<CanvasNode | CanvasEdge>;
@@ -196,13 +196,13 @@ export class CanvasMindmaps {
 		const observer = new MutationObserver((records) => {
 			for (const r of records) {
 				r.addedNodes.forEach((n) => {
-					if (n instanceof HTMLElement) {
+					if (n.instanceOf(HTMLElement)) {
 						if (n.tagName === 'IFRAME') hookIframe(n as HTMLIFrameElement);
 						n.querySelectorAll?.('iframe').forEach((f) => hookIframe(f));
 					}
 				});
 				r.removedNodes.forEach((n) => {
-					if (!(n instanceof HTMLElement)) return;
+					if (!(n.instanceOf(HTMLElement))) return;
 					const frames = n.tagName === 'IFRAME' ? [n as HTMLIFrameElement] : Array.from(n.querySelectorAll('iframe'));
 					for (const f of frames) {
 						if (!editors.has(f)) continue;
@@ -219,7 +219,7 @@ export class CanvasMindmaps {
 
 		// Follow the native drag: branches move with their card, and dropping a card
 		// on another one re-attaches it there.
-		// eslint-disable-next-line @typescript-eslint/no-this-alias
+		// eslint-disable-next-line @typescript-eslint/no-this-alias -- monkey-around wrappers rebind `this` to the patched object
 		const self = this;
 		const unpatch = around(canvas as unknown as Record<string, (...args: unknown[]) => unknown>, {
 			handleSelectionDrag: (next) =>
@@ -478,10 +478,10 @@ export class CanvasMindmaps {
 				n.moveTo({ x: f.x + (to.x - f.x) * e, y: f.y + (to.y - f.y) * e });
 			}
 			canvas.requestFrame?.();
-			if (t < 1) this.anims.set(key, requestAnimationFrame(step));
+			if (t < 1) this.anims.set(key, window.requestAnimationFrame(step));
 			else finish();
 		};
-		this.anims.set(key, requestAnimationFrame(step));
+		this.anims.set(key, window.requestAnimationFrame(step));
 		// Frames pause while the window is hidden: never leave cards mid-flight.
 		this.fallbacks.set(key, window.setTimeout(finish, duration + 150));
 	}
