@@ -1,14 +1,21 @@
 <div align="center">
 
-# Native Mindmap for Obsidian
+<img src="assets/logo.png" width="112" alt="Native Mindmap logo">
 
-**The mindmap plugin Obsidian was missing: fast, animated, keyboard-first, and stored as plain Markdown.**
+# Native Mindmap
 
-Think at the speed of your keyboard. Own your data forever.
+**Mindmaps that are just Markdown notes. Keyboard-first. Animated.**
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Obsidian](https://img.shields.io/badge/Obsidian-%E2%89%A5%201.5.0-7c3aed)
 ![Mobile](https://img.shields.io/badge/mobile-supported-success)
+
+<img src="assets/banner.png" alt="A Markdown note on the left, the same note rendered as a mindmap on the right">
+
+<!-- Replace with the real demo once recorded: assets/demo.gif (or an mp4 dragged into a GitHub issue to get a hosted URL) -->
+<!-- <img src="assets/demo.gif" alt="Building a mindmap with Tab and Enter"> -->
+
+[Install](#installation) · [Features](#features) · [Shortcuts](#shortcuts) · [Canvas mode](#canvas-mode)
 
 </div>
 
@@ -23,6 +30,17 @@ Most mindmap tools make you choose: a beautiful editor that locks your ideas in 
 - **Alive.** Topics grow out of their parent, fold back into it, and edges morph smoothly as the layout changes. Animations respect your system's *reduce motion* setting.
 - **Truly native.** Topics render real Obsidian Markdown: `[[wikilinks]]` with hover preview, tags, **bold**, `code`, math. It follows your theme's palette in light and dark mode.
 - **Works inside Canvas.** Turn any Canvas card into the center of a mindmap with a single keypress.
+
+## At a glance
+
+| | Native Mindmap |
+| --- | --- |
+| Storage | A plain `.md` note: heading + bullet list. No JSON, no database. |
+| Editing | Directly on the map, with the keyboard (`Tab`, `Enter`, arrows) or the mouse. |
+| Rendering | Real Obsidian Markdown: wikilinks with hover preview, tags, bold, code, math. |
+| Layouts | Mindmap, Logic, Timeline, switchable per map with animation. |
+| Canvas | Turn any Canvas card into a mindmap with `Tab`. |
+| Platforms | Desktop, tablet, phone. |
 
 ## Quick start
 

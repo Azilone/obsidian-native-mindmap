@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" font-family="-apple-system, 'Inter', 'Segoe UI', sans-serif">
+  <defs>
+    <radialGradient id="glow" cx="72%" cy="55%" r="55%">
+      <stop offset="0" stop-color="#7f6df2" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#7f6df2" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+      <circle cx="11" cy="11" r="1.1" fill="#ffffff" fill-opacity=".07"/>
+    </pattern>
+    <linearGradient id="accent" x1="0" x2="1">
+      <stop offset="0" stop-color="#a882ff"/><stop offset="1" stop-color="#7f6df2"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="640" fill="#141414"/>
+  <rect width="1280" height="640" fill="url(#dots)"/>
+  <rect width="1280" height="640" fill="url(#glow)"/>
+
+  <!-- Title -->
+  <text x="64" y="92" font-size="44" font-weight="750" fill="#f2f2f2" letter-spacing="-0.5">Native Mindmap</text>
+  <text x="64" y="132" font-size="22" fill="#a8a8a8">Mindmaps that are just Markdown notes. Keyboard-first. Animated.</text>
+
+  <!-- Markdown note -->
+  <g transform="translate(64,190)">
+    <rect width="380" height="380" rx="16" fill="#1e1e1e" stroke="#333"/>
+    <circle cx="22" cy="22" r="6" fill="#fb464c"/><circle cx="42" cy="22" r="6" fill="#e9973f"/><circle cx="62" cy="22" r="6" fill="#44cf6e"/>
+    <text x="96" y="27" font-size="14" fill="#777">Project Alpha.md</text>
+    <g font-family="'JetBrains Mono', 'SF Mono', Menlo, monospace" font-size="17">
+      <text x="28" y="78" fill="#666">---</text>
+      <text x="28" y="102" fill="#666">mindmap-plugin: basic</text>
+      <text x="28" y="126" fill="#666">---</text>
+      <text x="28" y="166" fill="#a882ff" font-weight="700"># Project Alpha</text>
+      <text x="28" y="204" fill="#dadada"><tspan fill="#666">- </tspan>Ideas</text>
+      <text x="58" y="230" fill="#dadada"><tspan fill="#666">- </tspan><tspan fill="#a882ff">[[Research]]</tspan></text>
+      <text x="58" y="256" fill="#dadada"><tspan fill="#666">- </tspan><tspan font-weight="700">Bold</tspan> idea</text>
+      <text x="28" y="282" fill="#dadada"><tspan fill="#666">- </tspan>Tasks</text>
+      <text x="58" y="308" fill="#dadada"><tspan fill="#666">- </tspan>Ship v1</text>
+      <text x="28" y="334" fill="#dadada"><tspan fill="#666">- </tspan>Questions</text>
+      <text x="58" y="360" fill="#dadada"><tspan fill="#666">- </tspan><tspan fill="#53dfdd">#later</tspan></text>
+    </g>
+  </g>
+
+  <!-- Arrow -->
+  <g transform="translate(470,380)">
+    <circle cx="28" cy="0" r="28" fill="url(#accent)"/>
+    <path d="M14 -6 H38 M30 -14 L38 -6 L30 2 M42 6 H18 M26 14 L18 6 L26 -2" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="28" y="56" font-size="14" fill="#8a8a8a" text-anchor="middle">same file</text>
+  </g>
+
+  <!-- Mindmap -->
+  <g transform="translate(870,380)" font-size="18" font-weight="550">
+    <g fill="none" stroke-width="2.5" stroke-linecap="round">
+      <path d="M-70 0 C-110 0 -110 -110 -150 -110" stroke="#e9973f"/>
+      <path d="M-70 0 C-110 0 -110 110 -150 110" stroke="#44cf6e"/>
+      <path d="M70 0 C110 0 110 -70 150 -70" stroke="#53dfdd"/>
+      <path d="M70 0 C110 0 110 90 150 90" stroke="#fa99cd"/>
+      <path d="M-230 -110 C-250 -110 -250 -150 -270 -150" stroke="#e9973f" stroke-width="1.6"/>
+      <path d="M-230 -110 C-250 -110 -250 -70 -270 -70" stroke="#e9973f" stroke-width="1.6"/>
+      <path d="M-250 110 C-265 110 -265 110 -280 110" stroke="#44cf6e" stroke-width="1.6"/>
+      <path d="M260 -70 C280 -70 280 -110 300 -110" stroke="#53dfdd" stroke-width="1.6"/>
+      <path d="M260 -70 C280 -70 280 -30 300 -30" stroke="#53dfdd" stroke-width="1.6"/>
+    </g>
+    <!-- center -->
+    <rect x="-82" y="-24" width="164" height="48" rx="14" fill="#7f6df2"/>
+    <text x="0" y="7" fill="#fff" font-weight="700" text-anchor="middle">Project Alpha</text>
+    <!-- level 1 -->
+    <rect x="-232" y="-128" width="82" height="36" rx="10" fill="#e9973f" fill-opacity=".16" stroke="#e9973f" stroke-opacity=".5"/>
+    <text x="-191" y="-104" fill="#f2c08a" text-anchor="middle">Ideas</text>
+    <rect x="-252" y="92" width="102" height="36" rx="10" fill="#44cf6e" fill-opacity=".16" stroke="#44cf6e" stroke-opacity=".5"/>
+    <text x="-201" y="116" fill="#8fe3a8" text-anchor="middle">Tasks</text>
+    <rect x="150" y="-88" width="112" height="36" rx="10" fill="#53dfdd" fill-opacity=".16" stroke="#53dfdd" stroke-opacity=".5"/>
+    <text x="206" y="-64" fill="#9becea" text-anchor="middle">Questions</text>
+    <rect x="150" y="72" width="128" height="36" rx="10" fill="#fa99cd" fill-opacity=".16" stroke="#fa99cd" stroke-opacity=".5"/>
+    <text x="214" y="96" fill="#fcc2e1" text-anchor="middle">Reading list</text>
+    <!-- level 2 -->
+    <g font-size="15" font-weight="450" fill="#cfcfcf">
+      <text x="-276" y="-145" text-anchor="end" fill="#a882ff">Research</text>
+      <text x="-276" y="-65" text-anchor="end"><tspan font-weight="700">Bold</tspan> idea</text>
+      <text x="-286" y="115" text-anchor="end">Ship v1</text>
+      <text x="306" y="-105" fill="#53dfdd">#later</text>
+      <text x="306" y="-25">Why now?</text>
+    </g>
+  </g>
+
+  <!-- Chips -->
+  <g font-size="16" font-weight="600">
+    <g transform="translate(560,560)"><rect width="168" height="38" rx="19" fill="#ffffff" fill-opacity=".06" stroke="#3a3a3a"/><text x="84" y="25" fill="#dadada" text-anchor="middle">Plain Markdown</text></g>
+    <g transform="translate(740,560)"><rect width="160" height="38" rx="19" fill="#ffffff" fill-opacity=".06" stroke="#3a3a3a"/><text x="80" y="25" fill="#dadada" text-anchor="middle">Tab · Enter · ↑↓</text></g>
+    <g transform="translate(912,560)"><rect width="140" height="38" rx="19" fill="#ffffff" fill-opacity=".06" stroke="#3a3a3a"/><text x="70" y="25" fill="#dadada" text-anchor="middle">Canvas mode</text></g>
+    <g transform="translate(1064,560)"><rect width="152" height="38" rx="19" fill="#ffffff" fill-opacity=".06" stroke="#3a3a3a"/><text x="76" y="25" fill="#dadada" text-anchor="middle">Mobile-ready</text></g>
+  </g>
+</svg>
