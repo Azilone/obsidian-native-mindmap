@@ -9,6 +9,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Obsidian](https://img.shields.io/badge/Obsidian-%E2%89%A5%201.5.0-7c3aed)
 ![Mobile](https://img.shields.io/badge/mobile-supported-success)
+![Maintained](https://img.shields.io/badge/maintained-yes-brightgreen)
 
 <img src="assets/demo.gif" alt="Building a mindmap with the keyboard, then in Canvas">
 
@@ -122,6 +123,10 @@ Several mindmaps can live on the same canvas next to your other cards. Only edge
 
 ## Installation
 
+### From Community plugins
+
+Native Mindmap has been submitted to the Obsidian community plugin directory and is awaiting review. Until it is listed, use BRAT or a manual install below.
+
 ### From a GitHub release (manual)
 
 1. Download `main.js`, `manifest.json` and `styles.css` from the [latest release](../../releases/latest).
@@ -148,9 +153,13 @@ Then enable **Native Mindmap** in *Settings → Community plugins*. The [Hot Rel
 - Lines in the note that aren't part of the list are kept and written back after the list.
 - Multi-line list items are joined onto one line.
 
-## Contributing
+## Contributing & maintenance
 
-Issues and pull requests are welcome. If a feature would make your mindmaps better, open an issue and describe the workflow.
+This plugin is **actively maintained**. Every issue and pull request is read and gets an answer.
+
+- 🐛 Found a bug? [Open an issue](../../issues/new) with your Obsidian version and steps to reproduce.
+- 💡 Have an idea? Open an issue and describe the workflow you want: real use cases shape the roadmap.
+- 🔧 Want to contribute code? Pull requests are welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
