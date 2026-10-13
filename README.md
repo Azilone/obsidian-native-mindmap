@@ -124,19 +124,28 @@ Several mindmaps can live on the same canvas next to your other cards. Only edge
 
 ## Installation
 
-### From Community plugins
+**[Install from Obsidian](obsidian://show-plugin?id=native-mindmap)**, or:
 
-Open **Settings → Community plugins → Browse**, search for **Native Mindmap**, then select **Install** and **Enable**. You can also find it on the [community directory](https://community.obsidian.md/plugins/native-mindmap).
+1. Open **Settings → Community plugins → Browse**.
+2. Search for **Native Mindmap**.
+3. Select **Install**, then **Enable**.
 
-### From a GitHub release (manual)
+It is also listed in the [community directory](https://community.obsidian.md/plugins/native-mindmap).
+
+<details>
+<summary>Manual install or beta versions</summary>
+
+**From a GitHub release**
 
 1. Download `main.js`, `manifest.json` and `styles.css` from the [latest release](../../releases/latest).
 2. Put them in `<your vault>/.obsidian/plugins/native-mindmap/`.
 3. Reload Obsidian and enable **Native Mindmap** in *Settings → Community plugins*.
 
-### With BRAT
+**With BRAT**
 
 Install [BRAT](https://github.com/TfTHacker/obsidian42-brat), then add this repository as a beta plugin.
+
+</details>
 
 ## Development
 
